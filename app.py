@@ -68,7 +68,6 @@ def is_job_pdf(message):
                     return True
     return False
 
-
 @client.on(events.NewMessage(chats=chat_id))
 async def handler(event):
     global placement_context_active
@@ -76,14 +75,18 @@ async def handler(event):
     if event.message.message:
         print(f"📝 Message: {event.message.message}")
 
-    keyWords = ["placement", "placed", "placement update", 'drive', 'hiring', 'shortlist', 'company']
-    if event.message.message and any(keyword in event.message.message.lower() for keyword in keyWords):
+    # Check for placement message
+    if event.message.message and is_placement_message(event.message.message):
         print("🚨 Drive-related message detected!")
         placement_context_active = True
-    
+        # You can add logic here to forward the message to a group if needed
+
+    # Check if it's a job description PDF
     if is_job_pdf(event.message):
         print("📄 Job description PDF detected!")
+        # You can add logic here to forward the PDF to a group if needed
 
+    # If document is attached
     if event.message.document:
         try:
             file_name = None
@@ -92,34 +95,36 @@ async def handler(event):
                     if hasattr(attr, 'file_name'):
                         file_name = attr.file_name
                         break
-            
+
             if not file_name:
                 file_name = f"document_{event.message.document.id}"
             print(f"📄 Document received: {file_name}")
 
-            # Check if the file is an Excel file
+            # Check if it's an Excel file
             if file_name and file_name.endswith(('.xlsx', '.xls')):
                 print(f"📥 Excel file detected: {file_name}")
-                # Download the file
-                file_path = await client.download_media(
-                    event.message.document, 
-                    file=os.path.join(download_dir, file_name)
-                )
-                print(f"✅ File downloaded to: {file_path}")
+                file_path = os.path.join(download_dir, file_name)
+
+                # Avoid re-downloading
+                if not os.path.exists(file_path):
+                    file_path = await client.download_media(event.message.document, file=file_path)
+                    print(f"✅ File downloaded to: {file_path}")
+                else:
+                    print(f"⚠️ File already exists: {file_path}")
 
                 if placement_context_active:
                     print("🔍 Processing placement-related Excel file...")
                     results = is_person_shortlisted(download_dir)
                     print(f"📊 Shortlist results: {results}")
                     
-                    # Send notification for shortlisted people
+                    # Show results
                     for name, is_shortlisted in results.items():
                         if is_shortlisted:
                             print(f"🎉 {name} is SHORTLISTED!")
                         else:
                             print(f"❌ {name} is not shortlisted.")
                     
-                    # Reset context after processing
+                    # Reset context
                     placement_context_active = False
 
         except Exception as e:
@@ -135,6 +140,9 @@ async def run_bot():
         
         # Keep the client running
         await client.run_until_disconnected()
+
+    #excel check shortlisted
+
 
 if __name__ == "__main__":
     import asyncio
