@@ -21,14 +21,38 @@ client = TelegramClient(session_name, api_id, api_hash)
 # with client:
 #     client.loop.run_until_complete(main())
 
+def is_placement_message(message_text):
+    MANDATORY_KEYWORDS = {
+    "hiring", "recruitment", "placement", "campus drive", "drive", "off-campus", "on-campus", 
+    "shortlisted", "interview" , "training period", "ctc", "job", "internship", "stipend",
+}
+    SUPPORTING_WORDS = {
+    "register", "form", "deadline", "apply", "link", "opportunity", "batch", "eligible", "round", "percentage", "criteria", "eligibility", "selection", "form"
+}
+    UNNECESSARY_WORDS = {
+    "webinar", "workshop", "discussion", "seminar", "lecture"
+    }
+
+    if any(keyword in message_text for keyword in MANDATORY_KEYWORDS) and any(keyword in message_text for keyword in SUPPORTING_WORDS) and not any(keyword in message_text for keyword in UNNECESSARY_WORDS):
+        return True
+    return False
+
+def is_job_pdf(message):
+    if message.media and message.media.document and message.media.document.mime_type == 'application/pdf':
+        if any(word in message.media.document.attributes[0].file_name.lower() for word in {"job", "description", "job-description", "details", "job description"}):
+            return True
+    return False
 
 @client.on(events.NewMessage(chats=chat_id))
 async def handler(event):
-    print(event.message.message)
-
-    keyWords = ["placement", "placed", "placement update", 'drive', 'hiring', 'placement', 'shortlist', 'company']
-    if any(keyword in event.message.message.lower() for keyword in keyWords):
+    if is_placement_message(event.message.message):
         print("🚨 Drive-related message detected!")
+        #send it in group
+    if is_job_pdf(event.message):
+        print("📄 Job PDF detected!")
+        #send it in group
+
+    #excel check shortlisted
 
 with client:
     print("🤖 Placemate is now listening for placement updates...")
