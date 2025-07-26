@@ -1,3 +1,4 @@
 .env
 placemate_session.session
 placemate_session.session-journal
+.venv/
