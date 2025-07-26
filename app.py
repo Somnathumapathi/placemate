@@ -26,6 +26,10 @@ client = TelegramClient(session_name, api_id, api_hash)
 async def handler(event):
     print(event.message.message)
 
+    keyWords = ["placement", "placed", "placement update", 'drive', 'hiring', 'placement', 'shortlist', 'company']
+    if any(keyword in event.message.message.lower() for keyword in keyWords):
+        print("🚨 Drive-related message detected!")
+
 with client:
     print("🤖 Placemate is now listening for placement updates...")
     client.run_until_disconnected()
