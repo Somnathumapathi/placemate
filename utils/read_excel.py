@@ -68,7 +68,3 @@ def is_person_shortlisted(directory):
     
     return results
 
-# Example usage:
-results = is_person_shortlisted('/path/to/excel/files')
-for name, is_shortlisted in results.items():
-    print(f"{name}: {'Shortlisted!' if is_shortlisted else 'Not shortlisted.'}")
