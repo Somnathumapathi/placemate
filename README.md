@@ -33,12 +33,19 @@
 ## Folder Structure
 
 placemate/
+
 ├── downloaded\_excel\_files/        → Excel files downloaded from Telegram
+
 ├── utils/
+
 │   └── read\_excel.py              → Logic to check if a student is shortlisted
+
 ├── .env                           → Stores API credentials and config
+
 ├── app.py                         → Main bot logic
+
 ├── requirements.txt
+
 └── README.md
 
 ---
