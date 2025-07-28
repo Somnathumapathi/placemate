@@ -64,11 +64,16 @@ placemate/
    pip install -r requirements.txt
 
 4. Set up your `.env` file
+   
    Create a `.env` file in the root directory and add:
    API\_ID=your\_telegram\_api\_id
+   
    API\_HASH=your\_telegram\_api\_hash
+   
    SESSION\_NAME=placemate\_session
+   
    CHAT\_ID=123456789 (ID of the group/channel to monitor)
+
    (To get API credentials, visit: [https://my.telegram.org](https://my.telegram.org))
 
 ---
@@ -90,14 +95,23 @@ It will:
 ## Sample Output
 
 🔗 Connecting to Telegram...
+
 ✅ Target chat found: Placement Group 2025
+
 📝 Message: Infosys placement drive this Friday!
+
 🚨 Drive-related message detected!
+
 📄 Document received: infosys\_shortlist.xlsx
+
 📥 Excel file detected: infosys\_shortlist.xlsx
+
 ✅ File downloaded to: /downloaded\_excel\_files/infosys\_shortlist.xlsx
+
 📊 Shortlist results:
+
 🎉 Alice Johnson is SHORTLISTED!
+
 ❌ Bob Smith is not shortlisted.
 
 ---
